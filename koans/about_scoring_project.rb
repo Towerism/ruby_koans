@@ -45,8 +45,7 @@ class Greed_game
   end
 
   def init_triplet_scores
-    @triplet_scores = Hash.new
-    @triplet_scores[1] = 1000
+    @triplet_scores = { 1 => 1000 }
     for i in 2..6
       @triplet_scores[i] = i * 100
     end
@@ -60,29 +59,29 @@ class Greed_game
 
   def score_triplets
     for i in 1..6
-      triplet_score i, @triplet_scores[i]
+      score_triplet i, @triplet_scores[i]
     end
   end
 
   def score_singles
-    singles_score 1, 100
-    singles_score 5, 50
+    score_single 1, 100
+    score_single 5, 50
   end
 
-  def triplet_score(face, score)
+  def score_triplet(face, score)
     if @faces[face - 1].to_a.length >= 3
       3.times { @faces[face - 1].pop }
       @score += score
     end
   end
 
-  def singles_score(face, score)
+  def score_single(face, score)
     @faces[face - 1].to_a.each { |x| @score += score }
   end
 
   public :play
   private :init_faces, :init_triplet_scores, :score_triplets,
-    :score_singles, :triplet_score, :singles_score
+    :score_singles, :score_triplet, :score_single
 end
 
 def score(dice)
