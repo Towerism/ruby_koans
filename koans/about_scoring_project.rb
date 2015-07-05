@@ -29,8 +29,65 @@ require File.expand_path(File.dirname(__FILE__) + '/neo')
 #
 # Your goal is to write the score method.
 
+class Greed_game
+  def initialize(dice)
+    @dice = dice
+    @score = 0
+    init_faces
+    init_triplet_scores
+  end
+
+  def init_faces
+    @faces = []
+    for i in 1..6
+      @faces << @dice.select { |x| x == i }
+    end
+  end
+
+  def init_triplet_scores
+    @triplet_scores = Hash.new
+    @triplet_scores[1] = 1000
+    for i in 2..6
+      @triplet_scores[i] = i * 100
+    end
+  end
+
+  def play
+    score_triplets
+    score_singles
+    @score
+  end
+
+  def score_triplets
+    for i in 1..6
+      triplet_score i, @triplet_scores[i]
+    end
+  end
+
+  def score_singles
+    singles_score 1, 100
+    singles_score 5, 50
+  end
+
+  def triplet_score(face, score)
+    if @faces[face - 1].to_a.length >= 3
+      3.times { @faces[face - 1].pop }
+      @score += score
+    end
+  end
+
+  def singles_score(face, score)
+    @faces[face - 1].to_a.each { |x| @score += score }
+  end
+
+  public :play
+  private :init_faces, :init_triplet_scores, :score_triplets,
+    :score_singles, :triplet_score, :singles_score
+end
+
 def score(dice)
-  # You need to write this method
+  greed = Greed_game.new(dice)
+  greed.play
 end
 
 class AboutScoringProject < Neo::Koan
